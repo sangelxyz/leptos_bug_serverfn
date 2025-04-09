@@ -10,11 +10,14 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Debug, Serialize, Clone)]
 struct Filter {
     pub page: Option<usize>,
+    //#[serde(default)]
     pub countries: Vec<i32>,
 }
 
 #[server]
 async fn load_server_fn(filter: Filter) -> Result<String, ServerFnError> {
+    leptos::logging::log!("Filter: {filter:?}");
+
     if let Some(page) = filter.page {
         Ok(format!("hello world {}", page))
     } else {
@@ -97,7 +100,9 @@ fn HomePage() -> impl IntoView {
         <h1>"Welcome to Leptos!"</h1>
         <Suspense fallback=move || view! { <div>"Loading"</div> }.into_any()>
         {move || match async_fn.get() {
-            Some(data) => view!{<div>{data.unwrap()}</div>}.into_any(),
+            Some(data) => {
+                //leptos::logging::log!("{data:?}");
+                view!{<div>{data.unwrap()}</div>}.into_any()},
             None => view!{<div>error</div>}.into_any()
         }}
         </Suspense>
