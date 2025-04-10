@@ -8,13 +8,12 @@ use leptos_router::{
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug, Serialize, Clone)]
-struct Filter {
+pub struct Filter {
     pub page: Option<usize>,
-    //#[serde(default)]
     pub countries: Vec<i32>,
 }
 
-#[server]
+#[server(default)]
 async fn load_server_fn(filter: Filter) -> Result<String, ServerFnError> {
     leptos::logging::log!("Filter: {filter:?}");
 
@@ -87,11 +86,7 @@ fn HomePage() -> impl IntoView {
                 page: Some(1),
                 countries: vec![],
             };
-            //
-            //let filter = Filter::builder()
-            //    .maybe_page(Some(page_num))
-            //    .countries(vec![]) // adding an i32 stops the error from happening
-            //    .build();
+
             load_server_fn(filter).await
         },
     );
